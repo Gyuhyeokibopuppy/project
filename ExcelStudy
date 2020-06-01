@@ -1,0 +1,77 @@
+package excel;
+/*
+ POI를 이용한 MS 오피스제품 제어해보기 ( 이중 엑셀만) 
+ */
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+public class ExcelStudy {
+	// 엑셀을 해석하기에 앞서, 엑셀파일을 접근부터 해야 하므로 스트림이
+	// 필요하다.
+	FileInputStream fis;
+	HSSFWorkbook book;
+	String filename = "E:/School/0601Monday/src/data/animal.xls";
+
+	public ExcelStudy() {
+		// 로컬 하드에 있는 엑셀 파일을 읽어와서, 데이터 분석후 화면에 출력
+		// 자바가 원칙상 엑셀을 이해할수 없기 때문에, 외부 라이브러리인
+		// 아파치의 POI를 이용하자
+		try {
+			fis = new FileInputStream(filename);
+			book = new HSSFWorkbook(fis); // 엑셀 객체 생성!!
+			HSSFSheet sheet = book.getSheet("member"); // 쉬트 접근
+
+			// 총 몇건의 행이 있는지 조사
+			int rowNum = sheet.getLastRowNum();
+
+			for (int i = 0; i < rowNum; i++) {
+				// 쉬트 안에 있는 데이터 접근
+				HSSFRow row = sheet.getRow(i);
+
+				HSSFCell name = row.getCell(0);
+				HSSFCell phone = row.getCell(1);
+				HSSFCell email = row.getCell(2);
+				HSSFCell age = row.getCell(3);
+		
+				if(i<1) {
+					System.out.println(name.getStringCellValue() + " " + phone.getStringCellValue() + " "
+							+ email.getStringCellValue() + " " + age.getStringCellValue());
+				}else {
+					
+					System.out.println(name.getStringCellValue() + " " + phone.getStringCellValue() + " "
+							+ email.getStringCellValue() + " " + (int)age.getNumericCellValue());
+					
+				}
+		
+			}
+
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (fis != null) {
+				try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	public static void main(String[] args) {
+
+		new ExcelStudy();
+	}
+
+}
